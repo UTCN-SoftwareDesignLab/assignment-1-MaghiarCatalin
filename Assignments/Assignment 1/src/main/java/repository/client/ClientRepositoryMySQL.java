@@ -1,11 +1,16 @@
 package repository.client;
 
+import controller.LoginController;
+import model.Activity;
 import model.Client;
 import model.User;
 import model.builder.ClientBuilder;
 import repository.EntityNotFoundException;
+import repository.activity.ActivityRepositoryMySQL;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static database.Constants.Tables.CLIENT;
@@ -14,9 +19,11 @@ import static database.Constants.Tables.CLIENT;
 public class ClientRepositoryMySQL implements ClientRepository {
 
     private final Connection connection;
+    private ActivityRepositoryMySQL activityRepository;
 
     public ClientRepositoryMySQL(Connection connection) {
         this.connection = connection;
+        activityRepository = new ActivityRepositoryMySQL(connection);
     }
 
     @Override
@@ -25,14 +32,20 @@ public class ClientRepositoryMySQL implements ClientRepository {
     }
 
     @Override
-    public Client findById(Long id) throws EntityNotFoundException {
+    public Client findById(int id) throws EntityNotFoundException {
         try{
             Statement statement = connection.createStatement();
             String fetchClientSql = "SELECT * FROM client WHERE id = " + id;
             ResultSet clientResultSet = statement.executeQuery(fetchClientSql);
             if(clientResultSet.next()){
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+                activityRepository.save(activity);
+
                 return new ClientBuilder()
-                        .setId(clientResultSet.getLong("id"))
+                        .setId(clientResultSet.getInt("id"))
                         .setName(clientResultSet.getString("name"))
                         .setIdentity_card_number(clientResultSet.getString("identity_card_number"))
                         .setPNC(clientResultSet.getString("personal_numerical_code"))
@@ -62,8 +75,13 @@ public class ClientRepositoryMySQL implements ClientRepository {
 
             ResultSet rs = insertUserStatement.getGeneratedKeys();
             rs.next();
-            long clientId = rs.getLong(1);
+            int clientId = rs.getInt(1);
             client.setId(clientId);
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
 
             return true;
         } catch (SQLException e) {
@@ -86,6 +104,12 @@ public class ClientRepositoryMySQL implements ClientRepository {
             insertUserStatement.setString(4, newClient.getAddress());
             insertUserStatement.setString(5, newClient.getEmail());
             insertUserStatement.executeUpdate();
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
+
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,11 +117,17 @@ public class ClientRepositoryMySQL implements ClientRepository {
         return false;
     }
 
-    public boolean delete(Long id){
+    public boolean delete(int id){
         try {
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("DELETE FROM client WHERE  " + "id = " + id);
             insertUserStatement.executeUpdate();
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
+
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,6 +141,11 @@ public class ClientRepositoryMySQL implements ClientRepository {
             Statement statement = connection.createStatement();
             String sql = "DELETE from client where id >= 0";
             statement.executeUpdate(sql);
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
         } catch (SQLException e) {
             e.printStackTrace();
         }

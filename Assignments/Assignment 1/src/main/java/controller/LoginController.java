@@ -9,18 +9,19 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by Alex on 18/03/2017.
- */
+
 public class LoginController {
+    public static String username;
     private final LoginView loginView;
     private final AuthenticationService authenticationService;
     private final EmployeeController employeeController;
+    private final AdminController adminController;
 
-    public LoginController(LoginView loginView, AuthenticationService authenticationService, EmployeeController employeeController) {
+    public LoginController(LoginView loginView, AuthenticationService authenticationService, EmployeeController employeeController, AdminController adminController) {
         this.loginView = loginView;
         this.authenticationService = authenticationService;
         this.employeeController = employeeController;
+        this.adminController = adminController;
         loginView.setLoginButtonListener(new LoginButtonListener());
         loginView.setRegisterButtonListener(new RegisterButtonListener());
     }
@@ -29,16 +30,22 @@ public class LoginController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String username = loginView.getUsername();
+            String username1 = loginView.getUsername();
             String password = loginView.getPassword();
 
-            Notification<User> loginNotification = authenticationService.login(username, password);
+            Notification<User> loginNotification = authenticationService.login(username1, password);
 
             if (loginNotification.hasErrors()) {
                 JOptionPane.showMessageDialog(loginView.getContentPane(), loginNotification.getFormattedErrors());
             } else {
-                if(!username.equals("admin@gmail.com"))
+                if(!username1.equals("admin@gmail.com")) {
+                    username = username1;
+                    loginView.setVisible(false);
                     employeeController.setVisible(true);
+                } else {
+                    loginView.setVisible(false);
+                    adminController.setVisible(true);
+                }
             }
         }
     }

@@ -1,11 +1,19 @@
 package repository.user;
 
+import controller.LoginController;
+import model.Activity;
 import model.User;
 import model.builder.UserBuilder;
 import model.validation.Notification;
 import repository.EntityNotFoundException;
+import repository.account.AccountRepository;
+import repository.activity.ActivityRepository;
+import repository.activity.ActivityRepositoryMySQL;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static database.Constants.Tables.USER;
@@ -16,7 +24,6 @@ import static database.Constants.Tables.USER;
 public class UserRepositoryMySQL implements UserRepository {
 
     private final Connection connection;
-
 
 
     public UserRepositoryMySQL(Connection connection) {
@@ -55,18 +62,19 @@ public class UserRepositoryMySQL implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) throws EntityNotFoundException {
+    public User findById(int id) throws EntityNotFoundException {
         try{
             Statement statement = connection.createStatement();
             String fetchUserSql = "SELECT * FROM user WHERE id = " + id;
             ResultSet userResultSet = statement.executeQuery(fetchUserSql);
             if(userResultSet.next()){
                 return new UserBuilder()
-                        .setId(userResultSet.getLong("id"))
+                        .setId(userResultSet.getInt("id"))
                         .setUsername(userResultSet.getString("username"))
                         .setPassword(userResultSet.getString("password"))
                         .setRole(userResultSet.getString("role"))
                         .build();
+
             }else {
                 throw new EntityNotFoundException(id, User.class.getSimpleName());
             }
@@ -88,9 +96,8 @@ public class UserRepositoryMySQL implements UserRepository {
 
             ResultSet rs = insertUserStatement.getGeneratedKeys();
             rs.next();
-            long userId = rs.getLong(1);
+            int userId = rs.getInt(1);
             user.setId(userId);
-
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,7 +107,7 @@ public class UserRepositoryMySQL implements UserRepository {
     }
 
 
-    public void update(User newUser) {
+    public boolean update(User newUser) {
         try {
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("UPDATE " + USER + " SET username = ?, password = ? WHERE id = " + newUser.getId());
@@ -108,13 +115,14 @@ public class UserRepositoryMySQL implements UserRepository {
             insertUserStatement.setString(1, newUser.getUsername());
             insertUserStatement.setString(2, newUser.getPassword());
             insertUserStatement.executeUpdate();
-
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public boolean delete(Long id){
+    public boolean delete(int id){
         try{
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("DELETE FROM user WHERE  " + "id = " + id);

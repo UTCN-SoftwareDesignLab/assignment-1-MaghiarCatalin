@@ -23,7 +23,7 @@ public class AccountServiceMySQL implements AccountService {
     }
 
     @Override
-    public ClientAccount findById(Long id) throws EntityNotFoundException {
+    public ClientAccount findById(int id) throws EntityNotFoundException {
         return accountRepository.findById(id);
     }
 
@@ -63,7 +63,12 @@ public class AccountServiceMySQL implements AccountService {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(int id) {
         return accountRepository.delete(id);
+    }
+
+    @Override
+    public void transfer(ClientAccount clientAccount1, ClientAccount clientAccount2, Integer amount) throws EntityNotFoundException {
+        accountRepository.transfer(clientAccount1, clientAccount2, amount);
     }
 }

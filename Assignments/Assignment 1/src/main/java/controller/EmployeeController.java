@@ -33,6 +33,7 @@ public class EmployeeController {
         employeeView.setUpdateAccountButtonListener(new UpdateAccountButtonListener());
         employeeView.setDeleteAccountButtonListener(new DeleteAccountButtonListener());
         employeeView.setViewAccountButtonListener(new ViewAccountButtonListener());
+        employeeView.setTransferMoneyButtonListener(new TransferMoneyButtonListener());
 
         employeeView.setCreateClientButtonListener(new CreateClientButtonListener());
         employeeView.setUpdateClientButtonListener(new UpdateClientButtonListener());
@@ -69,7 +70,7 @@ public class EmployeeController {
 
             ClientAccount clientAccount = null;
             try {
-                clientAccount = accountService.findById(Long.parseLong(employeeView.getAccountId()));
+                clientAccount = accountService.findById(Integer.parseInt(employeeView.getAccountId1TXT()));
             } catch (EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
@@ -99,7 +100,7 @@ public class EmployeeController {
 
             ClientAccount clientAccount = null;
             try {
-                clientAccount = accountService.findById(Long.parseLong(employeeView.getAccountId()));
+                clientAccount = accountService.findById(Integer.parseInt(employeeView.getAccountId1TXT()));
             } catch (EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
@@ -120,7 +121,7 @@ public class EmployeeController {
 
             ClientAccount clientAccount = null;
             try {
-                clientAccount = accountService.findById(Long.parseLong(employeeView.getAccountId()));
+                clientAccount = accountService.findById(Integer.parseInt(employeeView.getAccountId1TXT()));
             } catch (
                     EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
@@ -130,6 +131,28 @@ public class EmployeeController {
                     clientAccount.getCard_number() + " , Type: " + clientAccount.getAccount_type() +
                     ", Amount: " + clientAccount.getAmount() + ", Date Created: " +
                     clientAccount.getDate_created());
+        }
+    }
+
+    private class TransferMoneyButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            String moneyAmountForTransfer = employeeView.getAmountTransferTXT();
+
+            ClientAccount clientAccount1 = null;
+            ClientAccount clientAccount2 = null;
+
+            try {
+                clientAccount1 = accountService.findById(Integer.parseInt(employeeView.getAccountId1TXT()));
+                clientAccount2 = accountService.findById(Integer.parseInt(employeeView.getAccountId2TXT()));
+                accountService.transfer(clientAccount1, clientAccount2, Integer.parseInt(moneyAmountForTransfer));
+                JOptionPane.showMessageDialog(employeeView.getContentPane(), "Money transferred successfully from account " +
+                        clientAccount1.getId() + " to account " + clientAccount2.getId());
+            } catch (
+                    EntityNotFoundException entityNotFoundException) {
+                entityNotFoundException.printStackTrace();
+            }
         }
     }
 
@@ -166,7 +189,7 @@ public class EmployeeController {
 
             Client client = null;
             try {
-                client = clientService.findById(Long.parseLong(employeeView.getClientIdTXT()));
+                client = clientService.findById(Integer.parseInt(employeeView.getClientIdTXT()));
             } catch (EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
@@ -196,7 +219,7 @@ public class EmployeeController {
 
             Client client = null;
             try {
-                client = clientService.findById(Long.parseLong(employeeView.getClientIdTXT()));
+                client = clientService.findById(Integer.parseInt(employeeView.getClientIdTXT()));
             } catch (EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
@@ -217,7 +240,7 @@ public class EmployeeController {
 
             Client client = null;
             try {
-                client = clientService.findById(Long.parseLong(employeeView.getClientIdTXT()));
+                client = clientService.findById(Integer.parseInt(employeeView.getClientIdTXT()));
             } catch (
                     EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();

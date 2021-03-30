@@ -1,24 +1,9 @@
-package model;
+package view.DTO;
 
-import java.util.List;
-
-/**
- * Created by Alex on 11/03/2017.
- */
-public class User {
-
-    private int id;
+public class UserDTO {
     private String username;
     private String password;
     private String role;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -36,12 +21,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRoles() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(String roles) {
-        this.role = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
-
 }

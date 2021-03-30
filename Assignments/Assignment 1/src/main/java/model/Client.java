@@ -1,18 +1,18 @@
 package model;
 
 public class Client {
-    private Long id;
+    private int id;
     private String name;
     private String identity_card_number;
     private String PNC;
     private String address;
     private String email;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

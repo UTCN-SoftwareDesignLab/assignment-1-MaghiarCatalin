@@ -9,13 +9,13 @@ import java.util.List;
 public interface ClientService {
     List<Client> findAll();
 
-    Client findById(Long id) throws EntityNotFoundException;
+    Client findById(int id) throws EntityNotFoundException;
 
     Notification<Boolean> save(Client client);
 
     void removeAll();
 
-    boolean delete(Long id);
+    boolean delete(int id);
 
     Notification<Boolean> update(Client client);
 }

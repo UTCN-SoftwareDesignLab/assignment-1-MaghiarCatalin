@@ -1,10 +1,19 @@
 package view.DTO;
 
 public class ClientAccountDTO {
+    private int client_id;
     private String card_number;
     private String account_type;
     private int amount;
     private String date_created;
+
+    public int getClient_id() {
+        return client_id;
+    }
+
+    public void setClient_id(int client_id) {
+        this.client_id = client_id;
+    }
 
     public String getCard_number() {
         return card_number;

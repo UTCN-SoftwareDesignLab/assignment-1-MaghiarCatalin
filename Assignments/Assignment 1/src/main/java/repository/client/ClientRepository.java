@@ -9,13 +9,13 @@ public interface ClientRepository {
 
     List<Client> findAll();
 
-    Client findById(Long id) throws EntityNotFoundException;
+    Client findById(int id) throws EntityNotFoundException;
 
     boolean save(Client client);
 
     boolean update(Client newClient);
 
-    boolean delete(Long id);
+    boolean delete(int id);
 
     void removeAll();
 }

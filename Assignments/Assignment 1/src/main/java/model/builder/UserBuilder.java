@@ -1,6 +1,8 @@
 package model.builder;
 
+import model.Client;
 import model.User;
+import view.DTO.UserDTO;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class UserBuilder {
         user = new User();
     }
 
-    public UserBuilder setId(Long id) {
+    public UserBuilder setId(int id) {
         user.setId(id);
         return this;
     }
@@ -40,4 +42,13 @@ public class UserBuilder {
     }
 
 
+    public User buildFromDTO(UserDTO userDTO) {
+        User user = new UserBuilder()
+                .setUsername(userDTO.getUsername())
+                .setPassword(userDTO.getPassword())
+                .setRole(userDTO.getRole())
+                .build();
+
+        return user;
+    }
 }

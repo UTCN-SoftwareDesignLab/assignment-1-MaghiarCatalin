@@ -1,26 +1,29 @@
 package repository.account;
 
-import model.Client;
+import controller.LoginController;
+import model.Activity;
 import model.ClientAccount;
 import model.User;
 import model.builder.ClientAccountBuilder;
-import model.builder.ClientBuilder;
 import repository.EntityNotFoundException;
-import repository.client.ClientRepository;
+import repository.activity.ActivityRepositoryMySQL;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static database.Constants.Tables.ACCOUNT;
-import static database.Constants.Tables.CLIENT;
 
 
 public class AccountRepositoryMySQL implements AccountRepository {
 
     private final Connection connection;
+    private ActivityRepositoryMySQL activityRepository;
 
     public AccountRepositoryMySQL(Connection connection) {
         this.connection = connection;
+        activityRepository = new ActivityRepositoryMySQL(connection);
     }
 
     @Override
@@ -29,15 +32,20 @@ public class AccountRepositoryMySQL implements AccountRepository {
     }
 
     @Override
-    public ClientAccount findById(Long id) throws EntityNotFoundException {
+    public ClientAccount findById(int id) throws EntityNotFoundException {
         try{
             Statement statement = connection.createStatement();
             String fetchAccountSql = "SELECT * FROM account WHERE id = " + id;
             ResultSet accountResultSet = statement.executeQuery(fetchAccountSql);
             if(accountResultSet.next()){
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+                activityRepository.save(activity);
+
                 return new ClientAccountBuilder()
-                        .setId(accountResultSet.getLong("id"))
-                        .setClientId(accountResultSet.getLong("client_id"))
+                        .setId(accountResultSet.getInt("id"))
+                        .setClientId(accountResultSet.getInt("client_id"))
                         .setCardNumber(accountResultSet.getString("card_number"))
                         .setAccountType(accountResultSet.getString("account_type"))
                         .setAmount(accountResultSet.getInt("amount"))
@@ -57,7 +65,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
         try {
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("INSERT INTO account values (null, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            insertUserStatement.setLong(1, clientAccount.getClient_id());
+            insertUserStatement.setInt(1,clientAccount.getClient_id());
             insertUserStatement.setString(2, clientAccount.getCard_number());
             insertUserStatement.setString(3, clientAccount.getAccount_type());
             insertUserStatement.setInt(4, clientAccount.getAmount());
@@ -66,8 +74,13 @@ public class AccountRepositoryMySQL implements AccountRepository {
 
             ResultSet rs = insertUserStatement.getGeneratedKeys();
             rs.next();
-            long accountId = rs.getLong(1);
+            int accountId = rs.getInt(1);
+
             clientAccount.setId(accountId);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
 
             return true;
         } catch (SQLException e) {
@@ -90,6 +103,11 @@ public class AccountRepositoryMySQL implements AccountRepository {
             insertUserStatement.setInt(4, newAccount.getAmount());
             insertUserStatement.setString(5, newAccount.getDate_created());
             insertUserStatement.executeUpdate();
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,11 +115,16 @@ public class AccountRepositoryMySQL implements AccountRepository {
         return false;
     }
 
-    public boolean delete(Long id){
+    public boolean delete(int id){
         try{
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("DELETE FROM account WHERE  " + "id = " + id);
             insertUserStatement.executeUpdate();
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
             return true;
         }catch (SQLException e){
             e.printStackTrace();
@@ -115,9 +138,24 @@ public class AccountRepositoryMySQL implements AccountRepository {
             Statement statement = connection.createStatement();
             String sql = "DELETE from account where id >= 0";
             statement.executeUpdate(sql);
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
+            activityRepository.save(activity);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void transfer(ClientAccount clientAccount1, ClientAccount clientAccount2, Integer amount) throws EntityNotFoundException {
+
+        clientAccount1.setAmount(clientAccount1.getAmount() - amount);
+        clientAccount2.setAmount(clientAccount2.getAmount() + amount);
+
+        update(clientAccount1);
+        update(clientAccount2);
     }
 }
 

@@ -1,26 +1,26 @@
 package model;
 
 public class ClientAccount {
-    private Long id;
-    private Long client_id;
+    private int id;
+    private int client_id;
     private String card_number;
     private String account_type;
     private int amount;
     private String date_created;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Long getClient_id() {
+    public int getClient_id() {
         return client_id;
     }
 
-    public void setClient_id(Long client_id) {
+    public void setClient_id(int client_id) {
         this.client_id = client_id;
     }
 

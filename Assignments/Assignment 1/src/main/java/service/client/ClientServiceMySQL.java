@@ -21,7 +21,7 @@ public class ClientServiceMySQL implements ClientService{
     }
 
     @Override
-    public Client findById(Long id) throws EntityNotFoundException {
+    public Client findById(int id) throws EntityNotFoundException {
         return clientRepository.findById(id);
     }
 
@@ -56,7 +56,7 @@ public class ClientServiceMySQL implements ClientService{
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(int id) {
         return clientRepository.delete(id);
     }
 

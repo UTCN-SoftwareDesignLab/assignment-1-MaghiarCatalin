@@ -22,12 +22,12 @@ public class ClientAccountBuilder {
 
     }
 
-    public ClientAccountBuilder setId(Long id) {
+    public ClientAccountBuilder setId(int id) {
         clientAccount.setId(id);
         return this;
     }
 
-    public ClientAccountBuilder setClientId(Long id) {
+    public ClientAccountBuilder setClientId(int id) {
         clientAccount.setClient_id(id);
         return this;
     }

@@ -10,13 +10,15 @@ public interface AccountService {
 
     List<ClientAccount> findAll();
 
-    ClientAccount findById(Long id) throws EntityNotFoundException;
+    ClientAccount findById(int id) throws EntityNotFoundException;
 
     Notification<Boolean> save(ClientAccount account);
 
     Notification<Boolean> update(ClientAccount account);
 
-    boolean delete(Long id);
+    boolean delete(int id);
 
     void removeAll();
+
+    void transfer(ClientAccount clientAccount1, ClientAccount clientAccount2, Integer amount) throws EntityNotFoundException;
 }

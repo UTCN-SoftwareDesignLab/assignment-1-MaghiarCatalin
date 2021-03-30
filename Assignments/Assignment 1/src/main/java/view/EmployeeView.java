@@ -12,13 +12,11 @@ import static javax.swing.BoxLayout.Y_AXIS;
 
 public class EmployeeView extends JFrame{
 
-    ClientDTO clientDTO;
-    ClientAccountDTO clientAccountDTO;
-
     private JButton CreateAccountBTN;
     private JButton UpdateAccountBTN;
     private JButton DeleteAccountBTN;
     private JButton ViewAccountBTN;
+    private JButton TransferMoneyBTN;
 
     private JButton CreateClientBTN;
     private JButton UpdateClientBTN;
@@ -29,7 +27,9 @@ public class EmployeeView extends JFrame{
     private JTextField typeTXT;
     private JTextField amountTXT;
     private JTextField creationDateTXT;
-    private JTextField accountIdTXT;
+    private JTextField accountId1TXT;
+    private JTextField accountId2TXT;
+    private JTextField amountTransferTXT;
 
     private JTextField clientIdTXT;
     private JTextField clientNameTXT;
@@ -47,7 +47,9 @@ public class EmployeeView extends JFrame{
         add(typeTXT);
         add(amountTXT);
         add(creationDateTXT);
-        add(accountIdTXT);
+        add(accountId1TXT);
+        add(accountId2TXT);
+        add(amountTransferTXT);
         add(clientIdTXT);
         add(clientNameTXT);
         add(clientIdentityCardNumberTXT);
@@ -62,16 +64,17 @@ public class EmployeeView extends JFrame{
         add(UpdateClientBTN);
         add(DeleteClientBTN);
         add(ViewClientBTN);
+        add(TransferMoneyBTN);
     }
 
     public void initializeFields() {
-        this.clientDTO = new ClientDTO();
-        this.clientAccountDTO = new ClientAccountDTO();
         cardNumberTXT = new JTextField("Card number");
         typeTXT = new JTextField("account type");
         amountTXT = new JTextField("money amount");
         creationDateTXT = new JTextField("creation date");
-        accountIdTXT = new JTextField("account id");
+        accountId1TXT = new JTextField("account id1");
+        accountId2TXT = new JTextField("account id2");
+        amountTransferTXT = new JTextField("amount for transfer");
         clientIdTXT = new JTextField("client id");
         clientNameTXT = new JTextField("client name");
         clientIdentityCardNumberTXT = new JTextField("client identity card number");
@@ -86,6 +89,7 @@ public class EmployeeView extends JFrame{
         UpdateClientBTN = new JButton("Update Client");
         DeleteClientBTN = new JButton("Delete Client");
         ViewClientBTN = new JButton("View Client");
+        TransferMoneyBTN = new JButton("Transfer Money");
     }
 
     public String getCardNumber(){
@@ -104,8 +108,16 @@ public class EmployeeView extends JFrame{
         return creationDateTXT.getText();
     }
 
-    public String getAccountId() {
-        return accountIdTXT.getText();
+    public String getAccountId1TXT() {
+        return accountId1TXT.getText();
+    }
+
+    public String getAccountId2TXT() {
+        return accountId2TXT.getText();
+    }
+
+    public String getAmountTransferTXT() {
+        return amountTransferTXT.getText();
     }
 
     public String getClientIdTXT(){
@@ -158,30 +170,27 @@ public class EmployeeView extends JFrame{
         ViewClientBTN.addActionListener(viewClientButtonListener);
     }
 
+    public void setTransferMoneyButtonListener(ActionListener transferMoneyButtonListener) {
+        TransferMoneyBTN.addActionListener(transferMoneyButtonListener);
+    }
+
     public ClientDTO getClientDTO() {
-        initializeClientDTO();
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setName(getClientNameTXT());
+        clientDTO.setIdentity_card_number(getClientIdentityCardNumberTXT());
+        clientDTO.setPNC(getClientPCNTXT());
+        clientDTO.setAddress(getClientAddressTXT());
+        clientDTO.setEmail(getClientEmailTXT());
         return clientDTO;
     }
 
     public ClientAccountDTO getAccountDTO() {
-        initializeAccountDTO();
+        ClientAccountDTO clientAccountDTO = new ClientAccountDTO();
+        clientAccountDTO.setClient_id(Integer.parseInt(getClientIdTXT()));
+        clientAccountDTO.setCard_number(getCardNumber());
+        clientAccountDTO.setAccount_type(getTypeTXT());
+        clientAccountDTO.setAmount(Integer.parseInt(getAmountTXT()));
+        clientAccountDTO.setDate_created(getCreationDateTXT());
         return clientAccountDTO;
-    }
-
-    public void initializeClientDTO() {
-
-        this.clientDTO.setName(getClientNameTXT());
-        this.clientDTO.setIdentity_card_number(getClientIdentityCardNumberTXT());
-        this.clientDTO.setPNC(getClientPCNTXT());
-        this.clientDTO.setAddress(getClientAddressTXT());
-        this.clientDTO.setEmail(getClientEmailTXT());
-    }
-
-    public void initializeAccountDTO() {
-
-        this.clientAccountDTO.setCard_number(getCardNumber());
-        this.clientAccountDTO.setAccount_type(getTypeTXT());
-        this.clientAccountDTO.setAmount(Integer.parseInt(getAmountTXT()));
-        this.clientAccountDTO.setDate_created(getCreationDateTXT());
     }
 }

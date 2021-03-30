@@ -27,7 +27,7 @@ public class ClientBuilder {
 
     }
 
-    public ClientBuilder setId(Long id) {
+    public ClientBuilder setId(int id) {
         client.setId(id);
         return this;
     }

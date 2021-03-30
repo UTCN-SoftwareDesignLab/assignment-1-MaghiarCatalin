@@ -15,13 +15,13 @@ public interface UserRepository {
 
     Notification<User> findByUsernameAndPassword(String username, String password);
 
-    User findById(Long id) throws EntityNotFoundException;
+    User findById(int id) throws EntityNotFoundException;
 
     boolean save(User user);
 
-    void update(User newUser);
+    boolean update(User newUser);
 
-    boolean delete(Long id);
+    boolean delete(int id);
 
     void removeAll();
 
