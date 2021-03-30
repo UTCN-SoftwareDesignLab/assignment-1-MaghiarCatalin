@@ -1,26 +1,16 @@
 package database;
 
-import repository.security.RightsRolesRepository;
-import repository.security.RightsRolesRepositoryMySQL;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-import static database.Constants.Rights.RIGHTS;
-import static database.Constants.Roles.ROLES;
 import static database.Constants.Schemas.SCHEMAS;
-import static database.Constants.getRolesRights;
 
 /**
  * Created by Alex on 11/03/2017.
  */
-public class Boostraper {
-
-    private RightsRolesRepository rightsRolesRepository;
+public class Bootstrapper {
 
     public void execute() throws SQLException {
         dropAll();
@@ -38,13 +28,7 @@ public class Boostraper {
             Statement statement = connection.createStatement();
 
             String[] dropStatements = {
-                    "TRUNCATE `role_right`;",
-                    "DROP TABLE `role_right`;",
-                    "TRUNCATE `right`;",
-                    "TRUNCATE `user_role`;",
-                    "DROP TABLE `user_role`;",
-                    "TRUNCATE `role`;",
-                    "DROP TABLE  `book`, `role`, `user`;"
+                    "DROP TABLE  `user`, `account`, `client`;"
             };
 
             Arrays.stream(dropStatements).forEach(dropStatement -> {
@@ -85,42 +69,6 @@ public class Boostraper {
             System.out.println("Bootstrapping user data for " + schema);
 
             JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper(schema);
-            rightsRolesRepository = new RightsRolesRepositoryMySQL(connectionWrapper.getConnection());
-
-            bootstrapRoles();
-            bootstrapRights();
-            bootstrapRoleRight();
-            bootstrapUserRoles();
         }
-    }
-
-    private void bootstrapRoles() {
-        for (String role : ROLES) {
-            rightsRolesRepository.addRole(role);
-        }
-    }
-
-    private void bootstrapRights() {
-        for (String right : RIGHTS) {
-            rightsRolesRepository.addRight(right);
-        }
-    }
-
-    private void bootstrapRoleRight() {
-        Map<String, List<String>> rolesRights = getRolesRights();
-
-        for (String role : rolesRights.keySet()) {
-            Long roleId = rightsRolesRepository.findRoleByTitle(role).getId();
-
-            for (String right : rolesRights.get(role)) {
-                Long rightId = rightsRolesRepository.findRightByTitle(right).getId();
-
-                rightsRolesRepository.addRoleRight(roleId, rightId);
-            }
-        }
-    }
-
-    private void bootstrapUserRoles() {
-
     }
 }

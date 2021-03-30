@@ -6,9 +6,7 @@ import java.awt.event.ActionListener;
 
 import static javax.swing.BoxLayout.Y_AXIS;
 
-/**
- * Created by Alex on 18/03/2017.
- */
+
 public class LoginView extends JFrame {
 
     private JTextField tfUsername;

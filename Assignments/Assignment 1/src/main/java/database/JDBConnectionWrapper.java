@@ -12,10 +12,10 @@ public class JDBConnectionWrapper {
 
 
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://localhost/";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/";
 
     private static final String USER = "root";
-    private static final String PASS = "root";
+    private static final String PASS = "Analin1317!";
     private static final int TIMEOUT = 5;
 
     private Connection connection;

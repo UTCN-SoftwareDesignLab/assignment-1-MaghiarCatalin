@@ -1,39 +1,27 @@
 package service.user;
 
-import model.Role;
 import model.User;
 import model.builder.UserBuilder;
 import model.validation.Notification;
 import model.validation.UserValidator;
-import repository.security.RightsRolesRepository;
 import repository.user.UserRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Collections;
 
-import static database.Constants.Roles.CUSTOMER;
-
-/**
- * Created by Alex on 11/03/2017.
- */
 public class AuthenticationServiceMySQL implements AuthenticationService {
 
     private final UserRepository userRepository;
-    private final RightsRolesRepository rightsRolesRepository;
 
-    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
+    public AuthenticationServiceMySQL(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.rightsRolesRepository = rightsRolesRepository;
     }
 
     @Override
     public Notification<Boolean> register(String username, String password) {
-        Role customerRole = rightsRolesRepository.findRoleByTitle(CUSTOMER);
         User user = new UserBuilder()
                 .setUsername(username)
                 .setPassword(password)
-                .setRoles(Collections.singletonList(customerRole))
                 .build();
 
         UserValidator userValidator = new UserValidator(user);

@@ -1,6 +1,6 @@
 package launcher;
 
-import database.Boostraper;
+import database.Bootstrapper;
 
 import java.sql.SQLException;
 
@@ -21,7 +21,7 @@ public class Launcher {
     private static void bootstrap() {
         if (BOOTSTRAP) {
             try {
-                new Boostraper().execute();
+                new Bootstrapper().execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

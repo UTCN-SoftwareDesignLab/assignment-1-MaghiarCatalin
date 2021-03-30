@@ -1,4 +1,4 @@
-package service.user;
+package service;
 
 import launcher.ComponentFactory;
 import model.User;
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import repository.user.UserRepository;
+import service.user.AuthenticationService;
 
 /**
  * Created by Alex on 11/03/2017.
