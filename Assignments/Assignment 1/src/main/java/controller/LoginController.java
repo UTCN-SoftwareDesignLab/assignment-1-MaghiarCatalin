@@ -15,10 +15,12 @@ import java.awt.event.ActionListener;
 public class LoginController {
     private final LoginView loginView;
     private final AuthenticationService authenticationService;
+    private final EmployeeController employeeController;
 
-    public LoginController(LoginView loginView, AuthenticationService authenticationService) {
+    public LoginController(LoginView loginView, AuthenticationService authenticationService, EmployeeController employeeController) {
         this.loginView = loginView;
         this.authenticationService = authenticationService;
+        this.employeeController = employeeController;
         loginView.setLoginButtonListener(new LoginButtonListener());
         loginView.setRegisterButtonListener(new RegisterButtonListener());
     }
@@ -35,7 +37,8 @@ public class LoginController {
             if (loginNotification.hasErrors()) {
                 JOptionPane.showMessageDialog(loginView.getContentPane(), loginNotification.getFormattedErrors());
             } else {
-                JOptionPane.showMessageDialog(loginView.getContentPane(), "Login successful!");
+                if(!username.equals("admin@gmail.com"))
+                    employeeController.setVisible(true);
             }
         }
     }

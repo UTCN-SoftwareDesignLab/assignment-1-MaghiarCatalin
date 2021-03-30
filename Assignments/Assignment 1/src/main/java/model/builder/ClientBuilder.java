@@ -1,6 +1,9 @@
 package model.builder;
 
 import model.Client;
+import model.ClientAccount;
+import view.DTO.ClientAccountDTO;
+import view.DTO.ClientDTO;
 
 
 public class ClientBuilder {
@@ -8,6 +11,20 @@ public class ClientBuilder {
 
     public ClientBuilder() {
         client = new Client();
+    }
+
+
+    public Client buildFromDTO(ClientDTO clientDTO) {
+        Client client = new ClientBuilder()
+                .setName(clientDTO.getName())
+                .setIdentity_card_number(clientDTO.getIdentity_card_number())
+                .setPNC(clientDTO.getPNC())
+                .setAddress(clientDTO.getAddress())
+                .setEmail(clientDTO.getEmail())
+                .build();
+
+        return client;
+
     }
 
     public ClientBuilder setId(Long id) {

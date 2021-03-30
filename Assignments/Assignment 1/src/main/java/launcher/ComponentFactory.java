@@ -1,5 +1,6 @@
 package launcher;
 
+import controller.EmployeeController;
 import controller.LoginController;
 import database.DBConnectionFactory;
 import repository.account.AccountRepositoryMySQL;
@@ -12,6 +13,7 @@ import service.client.ClientService;
 import service.client.ClientServiceMySQL;
 import service.user.AuthenticationService;
 import service.user.AuthenticationServiceMySQL;
+import view.EmployeeView;
 import view.LoginView;
 
 import java.sql.Connection;
@@ -22,8 +24,11 @@ import java.sql.Connection;
 public class ComponentFactory {
 
     private final LoginView loginView;
+    private final EmployeeView employeeView;
+
 
     private final LoginController loginController;
+    private final EmployeeController employeeController;
 
 
     private final AuthenticationService authenticationService;
@@ -52,7 +57,9 @@ public class ComponentFactory {
         this.accountService = new AccountServiceMySQL(accountRepositoryMySQL);
         this.authenticationService = new AuthenticationServiceMySQL(this.userRepository);
         this.loginView = new LoginView();
-        this.loginController = new LoginController(loginView, authenticationService);
+        this.employeeView = new EmployeeView();
+        this.employeeController = new EmployeeController(this.employeeView, this.accountService, this.clientService);
+        this.loginController = new LoginController(loginView, authenticationService, employeeController);
     }
 
     public AuthenticationService getAuthenticationService() {

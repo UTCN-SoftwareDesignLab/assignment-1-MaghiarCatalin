@@ -29,8 +29,8 @@ public class AccountValidator {
     }
 
     private void validateCardNumber(String identityCardNumber) {
-        if (identityCardNumber.length() != 12)
-            errors.add("The card number. It should have 12 digits.");
+        if (identityCardNumber.length() != 16)
+            errors.add("The card number is incorrect. It should have 16 digits.");
         if(!Pattern.compile(PERSONAL_NUMBER_VALIDATION_REGEX).matcher(identityCardNumber).matches()){
             errors.add("Invalid card number, must contain only numbers");
         }

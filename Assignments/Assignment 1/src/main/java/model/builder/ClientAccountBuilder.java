@@ -1,12 +1,25 @@
 package model.builder;
 
 import model.ClientAccount;
+import view.DTO.ClientAccountDTO;
 
 public class ClientAccountBuilder {
     private ClientAccount clientAccount;
 
     public ClientAccountBuilder() {
         clientAccount = new ClientAccount();
+    }
+
+    public ClientAccount buildFromDTO(ClientAccountDTO clientAccountDTO) {
+        ClientAccount clientAccount = new ClientAccountBuilder()
+                .setCardNumber(clientAccountDTO.getCard_number())
+                .setAccountType(clientAccountDTO.getAccount_type())
+                .setAmount(clientAccountDTO.getAmount())
+                .setDateCreated(clientAccountDTO.getDate_created())
+                .build();
+
+        return clientAccount;
+
     }
 
     public ClientAccountBuilder setId(Long id) {

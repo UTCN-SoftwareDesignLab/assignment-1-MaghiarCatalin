@@ -4,9 +4,7 @@ import database.Bootstrapper;
 
 import java.sql.SQLException;
 
-/**
- * Created by Alex on 18/03/2017.
- */
+
 public class Launcher {
 
     public static boolean BOOTSTRAP = false;
