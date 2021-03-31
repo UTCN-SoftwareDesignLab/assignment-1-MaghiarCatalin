@@ -1,19 +1,17 @@
-package repository.activity;
+package service.activity;
 
 import model.Activity;
-import model.User;
-import model.builder.UserBuilder;
-import repository.EntityNotFoundException;
+import model.validation.Notification;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityRepositoryMySQL implements ActivityRepository{
+public class ActivityServiceMySQL implements ActivityService{
 
     private final Connection connection;
 
-    public ActivityRepositoryMySQL(Connection connection) {
+    public ActivityServiceMySQL(Connection connection) {
         this.connection = connection;
     }
 
@@ -59,6 +57,4 @@ public class ActivityRepositoryMySQL implements ActivityRepository{
         }
         return null;
     }
-
-
 }
