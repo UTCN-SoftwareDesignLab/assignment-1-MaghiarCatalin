@@ -18,7 +18,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class EmployeeController {
     private final EmployeeView employeeView;
@@ -63,7 +62,6 @@ public class EmployeeController {
                 if (!accountNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account failed creation");
                 } else {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "create account", now.toLocalDate().toString());
                     activityServiceMySQL.save(activity);
@@ -99,7 +97,6 @@ public class EmployeeController {
                 if (!accountNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account did not update");
                 } else {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "find account", now.toLocalDate().toString());
                     activityServiceMySQL.save(activity);
@@ -124,7 +121,6 @@ public class EmployeeController {
             Boolean deleted = accountService.delete(clientAccount.getId());
 
             if (deleted) {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "delete account", now.toLocalDate().toString());
                 activityServiceMySQL.save(activity);
@@ -149,8 +145,6 @@ public class EmployeeController {
                     EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDateTime now = LocalDateTime.now();
             Activity activity = new Activity(LoginController.username, "view account", now.toLocalDate().toString());
             activityServiceMySQL.save(activity);
@@ -176,7 +170,6 @@ public class EmployeeController {
                 clientAccount2 = accountService.findById(Integer.parseInt(employeeView.getAccountId2TXT()));
                 accountService.transfer(clientAccount1, clientAccount2, Integer.parseInt(moneyAmountForTransfer));
 
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "transfer", now.toLocalDate().toString());
                 activityServiceMySQL.save(activity);
@@ -206,7 +199,6 @@ public class EmployeeController {
                 if (!clientNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client failed creation");
                 } else {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "create client", now.toLocalDate().toString());
                     activityServiceMySQL.save(activity);
@@ -241,7 +233,6 @@ public class EmployeeController {
                 if (!clientNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client did not update");
                 } else {
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "update client", now.toLocalDate().toString());
                     activityServiceMySQL.save(activity);
@@ -267,7 +258,6 @@ public class EmployeeController {
             Boolean deleted = clientService.delete(client.getId());
 
             if (deleted) {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "delete client", now.toLocalDate().toString());
                 activityServiceMySQL.save(activity);
@@ -291,8 +281,6 @@ public class EmployeeController {
                     EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDateTime now = LocalDateTime.now();
             Activity activity = new Activity(LoginController.username, "view client", now.toLocalDate().toString());
             activityServiceMySQL.save(activity);
