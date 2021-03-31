@@ -1,0 +1,73 @@
+package repository.client;
+
+import database.DBConnectionFactory;
+import database.JDBConnectionWrapper;
+import model.Client;
+import model.ClientAccount;
+import model.builder.ClientAccountBuilder;
+import model.builder.ClientBuilder;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import repository.EntityNotFoundException;
+import repository.account.AccountRepositoryMySQL;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public class ClientRepositoryMySQLTest {
+    private static ClientRepositoryMySQL clientRepositoryMySQL;
+
+    @BeforeClass
+    public static void setup() {
+        JDBConnectionWrapper connectionWrapper = DBConnectionFactory.getConnectionWrapper(true);
+        clientRepositoryMySQL = new ClientRepositoryMySQL(connectionWrapper.getConnection());
+    }
+
+    @Test
+    public void testFindAll() {
+        List<Client> clients = clientRepositoryMySQL.findAll();
+        Assert.assertTrue(clients.isEmpty());
+    }
+
+    @Test
+    public void testFindById() throws EntityNotFoundException {
+        List<Client> clients = clientRepositoryMySQL.findAll();
+        int current = clients.get(clients.size() - 1).getId();
+
+        Client client = new ClientBuilder().setName("Andrei").setIdentity_card_number("1111").setPNC("123456789123").setAddress("Cluj").setEmail("andrei@andrei.com").build();
+        clientRepositoryMySQL.save(client);
+
+        Assert.assertNotNull(clientRepositoryMySQL.findById(current + 1));
+    }
+
+    @Test
+    public void testSave() {
+        boolean saved = clientRepositoryMySQL.save(new ClientBuilder().setName("Mircea").setIdentity_card_number("0000").setPNC("223456789123").setAddress("Arad").setEmail("mircea@gmail.com").build());
+        Assert.assertTrue(saved);
+    }
+
+    @Test
+    public void testDelete() {
+        Client client = new ClientBuilder().setName("Elisa").setIdentity_card_number("0000").setPNC("223456789124").setAddress("Arad").setEmail("elisa@gmail.com").build();
+        clientRepositoryMySQL.save(client);
+        boolean deleted = clientRepositoryMySQL.delete(client.getId());
+        Assert.assertTrue(deleted);
+    }
+
+    @Test
+    public void testUpdate() {
+        Client client = new ClientBuilder().setName("Daniel").setIdentity_card_number("0000").setPNC("123456789124").setAddress("Bucuresti").setEmail("daniel@gmail.com").build();
+        client.setName("Vlad");
+        boolean updated = clientRepositoryMySQL.update(client);
+        Assert.assertTrue(updated);
+    }
+
+    @Test
+    public void testRemoveAll() {
+        clientRepositoryMySQL.save(new ClientBuilder().setName("Catalin").setIdentity_card_number("0000").setPNC("123456789127").setAddress("Sibiu").setEmail("catalin@gmail.com").build());
+        clientRepositoryMySQL.removeAll();
+        List<Client> noClients = clientRepositoryMySQL.findAll();
+        Assert.assertTrue(noClients.isEmpty());
+    }
+}

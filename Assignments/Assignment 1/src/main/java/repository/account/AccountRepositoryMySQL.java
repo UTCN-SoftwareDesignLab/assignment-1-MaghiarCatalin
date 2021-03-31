@@ -2,6 +2,7 @@ package repository.account;
 
 import controller.LoginController;
 import model.Activity;
+import model.Client;
 import model.ClientAccount;
 import model.User;
 import model.builder.ClientAccountBuilder;
@@ -11,6 +12,7 @@ import repository.activity.ActivityRepositoryMySQL;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Tables.ACCOUNT;
@@ -19,16 +21,27 @@ import static database.Constants.Tables.ACCOUNT;
 public class AccountRepositoryMySQL implements AccountRepository {
 
     private final Connection connection;
-    private ActivityRepositoryMySQL activityRepository;
 
     public AccountRepositoryMySQL(Connection connection) {
         this.connection = connection;
-        activityRepository = new ActivityRepositoryMySQL(connection);
     }
 
     @Override
     public List<ClientAccount> findAll() {
-        return null;
+        List<ClientAccount> accounts = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "Select * from account";
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+                accounts.add(getAccountFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return accounts;
     }
 
     @Override
@@ -37,12 +50,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
             Statement statement = connection.createStatement();
             String fetchAccountSql = "SELECT * FROM account WHERE id = " + id;
             ResultSet accountResultSet = statement.executeQuery(fetchAccountSql);
-            if(accountResultSet.next()){
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                LocalDateTime now = LocalDateTime.now();
-                Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
-                activityRepository.save(activity);
-
+            if(accountResultSet.next()) {
                 return new ClientAccountBuilder()
                         .setId(accountResultSet.getInt("id"))
                         .setClientId(accountResultSet.getInt("client_id"))
@@ -51,7 +59,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
                         .setAmount(accountResultSet.getInt("amount"))
                         .setDateCreated(accountResultSet.getString("date_created"))
                         .build();
-            }else {
+            } else {
                 throw new EntityNotFoundException(id, User.class.getSimpleName());
             }
         }catch(SQLException e){
@@ -75,13 +83,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
             ResultSet rs = insertUserStatement.getGeneratedKeys();
             rs.next();
             int accountId = rs.getInt(1);
-
             clientAccount.setId(accountId);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
-            activityRepository.save(activity);
-
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,11 +105,6 @@ public class AccountRepositoryMySQL implements AccountRepository {
             insertUserStatement.setInt(4, newAccount.getAmount());
             insertUserStatement.setString(5, newAccount.getDate_created());
             insertUserStatement.executeUpdate();
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
-            activityRepository.save(activity);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,11 +117,6 @@ public class AccountRepositoryMySQL implements AccountRepository {
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("DELETE FROM account WHERE  " + "id = " + id);
             insertUserStatement.executeUpdate();
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
-            activityRepository.save(activity);
             return true;
         }catch (SQLException e){
             e.printStackTrace();
@@ -138,11 +130,6 @@ public class AccountRepositoryMySQL implements AccountRepository {
             Statement statement = connection.createStatement();
             String sql = "DELETE from account where id >= 0";
             statement.executeUpdate(sql);
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            Activity activity = new Activity(LoginController.username, "find", now.toLocalDate().toString());
-            activityRepository.save(activity);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -156,6 +143,17 @@ public class AccountRepositoryMySQL implements AccountRepository {
 
         update(clientAccount1);
         update(clientAccount2);
+    }
+
+    private ClientAccount getAccountFromResultSet(ResultSet rs) throws SQLException {
+        return new ClientAccountBuilder()
+                .setId(rs.getInt("id"))
+                .setClientId(rs.getInt("client_id"))
+                .setCardNumber(rs.getString("card_number"))
+                .setAccountType(rs.getString("account_type"))
+                .setAmount(rs.getInt("amount"))
+                .setDateCreated(rs.getString("date_created"))
+                .build();
     }
 }
 

@@ -1,11 +1,13 @@
 package controller;
 
+import model.Activity;
 import model.Client;
 import model.ClientAccount;
 import model.builder.ClientAccountBuilder;
 import model.builder.ClientBuilder;
 import model.validation.Notification;
 import repository.EntityNotFoundException;
+import repository.activity.ActivityRepositoryMySQL;
 import service.account.AccountService;
 import service.client.ClientService;
 import view.DTO.ClientAccountDTO;
@@ -15,19 +17,23 @@ import view.EmployeeView;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EmployeeController {
     private final EmployeeView employeeView;
     private final AccountService accountService;
     private final ClientService clientService;
+    private ActivityRepositoryMySQL activityRepository;
 
-    public EmployeeController(EmployeeView employeeView, AccountService accountService, ClientService clientService) {
+    public EmployeeController(EmployeeView employeeView, AccountService accountService, ClientService clientService, ActivityRepositoryMySQL activityRepository) {
 
         this.employeeView = employeeView;
         this.employeeView.setVisible(false);
 
         this.accountService = accountService;
         this.clientService = clientService;
+        this.activityRepository = activityRepository;
 
         employeeView.setCreateAccountButtonListener(new CreateAccountButtonListener());
         employeeView.setUpdateAccountButtonListener(new UpdateAccountButtonListener());
@@ -57,6 +63,11 @@ public class EmployeeController {
                 if (!accountNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account failed creation");
                 } else {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    Activity activity = new Activity(LoginController.username, "create account", now.toLocalDate().toString());
+                    activityRepository.save(activity);
+
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account created successfully");
                 }
             }
@@ -88,6 +99,11 @@ public class EmployeeController {
                 if (!accountNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account did not update");
                 } else {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    Activity activity = new Activity(LoginController.username, "find account", now.toLocalDate().toString());
+                    activityRepository.save(activity);
+
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account updated successfully");
                 }
             }
@@ -107,10 +123,17 @@ public class EmployeeController {
 
             Boolean deleted = accountService.delete(clientAccount.getId());
 
-            if (deleted)
+            if (deleted) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                Activity activity = new Activity(LoginController.username, "delete account", now.toLocalDate().toString());
+                activityRepository.save(activity);
+
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account successfully deleted");
-            else
+            }
+            else {
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account failed uncreation");
+            }
 
         }
     }
@@ -126,6 +149,11 @@ public class EmployeeController {
                     EntityNotFoundException entityNotFoundException) {
                 entityNotFoundException.printStackTrace();
             }
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "view account", now.toLocalDate().toString());
+            activityRepository.save(activity);
 
             JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account information: Card number: " +
                     clientAccount.getCard_number() + " , Type: " + clientAccount.getAccount_type() +
@@ -147,6 +175,12 @@ public class EmployeeController {
                 clientAccount1 = accountService.findById(Integer.parseInt(employeeView.getAccountId1TXT()));
                 clientAccount2 = accountService.findById(Integer.parseInt(employeeView.getAccountId2TXT()));
                 accountService.transfer(clientAccount1, clientAccount2, Integer.parseInt(moneyAmountForTransfer));
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                Activity activity = new Activity(LoginController.username, "transfer", now.toLocalDate().toString());
+                activityRepository.save(activity);
+
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Money transferred successfully from account " +
                         clientAccount1.getId() + " to account " + clientAccount2.getId());
             } catch (
@@ -154,10 +188,6 @@ public class EmployeeController {
                 entityNotFoundException.printStackTrace();
             }
         }
-    }
-
-    public void setVisible(boolean b) {
-        employeeView.setVisible(b);
     }
 
     private class CreateClientButtonListener implements ActionListener {
@@ -176,6 +206,11 @@ public class EmployeeController {
                 if (!clientNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client failed creation");
                 } else {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    Activity activity = new Activity(LoginController.username, "create client", now.toLocalDate().toString());
+                    activityRepository.save(activity);
+
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client created successfully");
                 }
             }
@@ -206,6 +241,11 @@ public class EmployeeController {
                 if (!clientNotification.getResult()) {
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client did not update");
                 } else {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    Activity activity = new Activity(LoginController.username, "update client", now.toLocalDate().toString());
+                    activityRepository.save(activity);
+
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client updated successfully");
                 }
             }
@@ -226,11 +266,17 @@ public class EmployeeController {
 
             Boolean deleted = clientService.delete(client.getId());
 
-            if (deleted)
-                JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client deleted successfully");
-            else
-                JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client failed uncreation");
+            if (deleted) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                Activity activity = new Activity(LoginController.username, "delete client", now.toLocalDate().toString());
+                activityRepository.save(activity);
 
+                JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client deleted successfully");
+            }
+            else {
+                JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client failed uncreation");
+            }
         }
     }
 
@@ -246,10 +292,20 @@ public class EmployeeController {
                 entityNotFoundException.printStackTrace();
             }
 
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            Activity activity = new Activity(LoginController.username, "view client", now.toLocalDate().toString());
+            activityRepository.save(activity);
+
             JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client information: Name: " +
                     client.getName() + " , Identity card number: " + client.getIdentity_card_number() +
                     ", PNC: " + client.getPNC() + ", Address: " + client.getAddress() +
                     ", Email: " + client.getEmail());
         }
     }
+
+    public void setVisible(boolean b) {
+        employeeView.setVisible(b);
+    }
+
 }

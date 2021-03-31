@@ -73,7 +73,7 @@ public class ComponentFactory {
         this.employeeView = new EmployeeView();
         this.adminView = new AdminView();
         this.adminController = new AdminController(this.adminView, this.userService, this.activityRepositoryMySQL);
-        this.employeeController = new EmployeeController(this.employeeView, this.accountService, this.clientService);
+        this.employeeController = new EmployeeController(this.employeeView, this.accountService, this.clientService, this.activityRepositoryMySQL);
         this.loginController = new LoginController(loginView, authenticationService, employeeController, adminController);
     }
 
