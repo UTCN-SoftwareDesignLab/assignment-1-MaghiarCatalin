@@ -2,7 +2,9 @@ package repository.user;
 
 import controller.LoginController;
 import model.Activity;
+import model.Client;
 import model.User;
+import model.builder.ClientBuilder;
 import model.builder.UserBuilder;
 import model.validation.Notification;
 import repository.EntityNotFoundException;
@@ -14,6 +16,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Tables.USER;
@@ -32,7 +35,20 @@ public class UserRepositoryMySQL implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return null;
+        List<User> users = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "Select * from user";
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+                users.add(getClientFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
 
     @Override
@@ -145,5 +161,12 @@ public class UserRepositoryMySQL implements UserRepository {
         }
     }
 
-
+    private User getClientFromResultSet(ResultSet rs) throws SQLException {
+        return new UserBuilder()
+                .setId(rs.getInt("id"))
+                .setUsername(rs.getString("username"))
+                .setPassword(rs.getString("password"))
+                .setRole(rs.getString("role"))
+                .build();
+    }
 }

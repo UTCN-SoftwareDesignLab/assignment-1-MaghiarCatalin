@@ -25,8 +25,8 @@ public class AccountRepositoryMySQLTest {
 
     @Test
     public void testFindAll() {
-        List<ClientAccount> all = accountRepositoryMySQL.findAll();
-        Assert.assertFalse(all.isEmpty());
+        List<ClientAccount> accounts = accountRepositoryMySQL.findAll();
+        Assert.assertFalse(accounts.isEmpty());
     }
 
     @Test
