@@ -7,8 +7,8 @@ import model.builder.ClientAccountBuilder;
 import model.builder.ClientBuilder;
 import model.validation.Notification;
 import repository.EntityNotFoundException;
-import repository.activity.ActivityRepositoryMySQL;
 import service.account.AccountService;
+import service.activity.ActivityServiceMySQL;
 import service.client.ClientService;
 import view.DTO.ClientAccountDTO;
 import view.DTO.ClientDTO;
@@ -24,16 +24,16 @@ public class EmployeeController {
     private final EmployeeView employeeView;
     private final AccountService accountService;
     private final ClientService clientService;
-    private ActivityRepositoryMySQL activityRepository;
+    private ActivityServiceMySQL activityServiceMySQL;
 
-    public EmployeeController(EmployeeView employeeView, AccountService accountService, ClientService clientService, ActivityRepositoryMySQL activityRepository) {
+    public EmployeeController(EmployeeView employeeView, AccountService accountService, ClientService clientService, ActivityServiceMySQL activityServiceMySQL) {
 
         this.employeeView = employeeView;
         this.employeeView.setVisible(false);
 
         this.accountService = accountService;
         this.clientService = clientService;
-        this.activityRepository = activityRepository;
+        this.activityServiceMySQL = activityServiceMySQL;
 
         employeeView.setCreateAccountButtonListener(new CreateAccountButtonListener());
         employeeView.setUpdateAccountButtonListener(new UpdateAccountButtonListener());
@@ -66,7 +66,7 @@ public class EmployeeController {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "create account", now.toLocalDate().toString());
-                    activityRepository.save(activity);
+                    activityServiceMySQL.save(activity);
 
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account created successfully");
                 }
@@ -102,7 +102,7 @@ public class EmployeeController {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "find account", now.toLocalDate().toString());
-                    activityRepository.save(activity);
+                    activityServiceMySQL.save(activity);
 
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account updated successfully");
                 }
@@ -127,7 +127,7 @@ public class EmployeeController {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "delete account", now.toLocalDate().toString());
-                activityRepository.save(activity);
+                activityServiceMySQL.save(activity);
 
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account successfully deleted");
             }
@@ -153,7 +153,7 @@ public class EmployeeController {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDateTime now = LocalDateTime.now();
             Activity activity = new Activity(LoginController.username, "view account", now.toLocalDate().toString());
-            activityRepository.save(activity);
+            activityServiceMySQL.save(activity);
 
             JOptionPane.showMessageDialog(employeeView.getContentPane(), "Account information: Card number: " +
                     clientAccount.getCard_number() + " , Type: " + clientAccount.getAccount_type() +
@@ -179,7 +179,7 @@ public class EmployeeController {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "transfer", now.toLocalDate().toString());
-                activityRepository.save(activity);
+                activityServiceMySQL.save(activity);
 
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Money transferred successfully from account " +
                         clientAccount1.getId() + " to account " + clientAccount2.getId());
@@ -209,7 +209,7 @@ public class EmployeeController {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "create client", now.toLocalDate().toString());
-                    activityRepository.save(activity);
+                    activityServiceMySQL.save(activity);
 
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client created successfully");
                 }
@@ -244,7 +244,7 @@ public class EmployeeController {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     LocalDateTime now = LocalDateTime.now();
                     Activity activity = new Activity(LoginController.username, "update client", now.toLocalDate().toString());
-                    activityRepository.save(activity);
+                    activityServiceMySQL.save(activity);
 
                     JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client updated successfully");
                 }
@@ -270,7 +270,7 @@ public class EmployeeController {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 LocalDateTime now = LocalDateTime.now();
                 Activity activity = new Activity(LoginController.username, "delete client", now.toLocalDate().toString());
-                activityRepository.save(activity);
+                activityServiceMySQL.save(activity);
 
                 JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client deleted successfully");
             }
@@ -295,7 +295,7 @@ public class EmployeeController {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDateTime now = LocalDateTime.now();
             Activity activity = new Activity(LoginController.username, "view client", now.toLocalDate().toString());
-            activityRepository.save(activity);
+            activityServiceMySQL.save(activity);
 
             JOptionPane.showMessageDialog(employeeView.getContentPane(), "Client information: Name: " +
                     client.getName() + " , Identity card number: " + client.getIdentity_card_number() +

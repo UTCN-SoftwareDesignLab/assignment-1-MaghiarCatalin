@@ -9,10 +9,10 @@ import model.builder.ClientBuilder;
 import model.builder.UserBuilder;
 import model.validation.Notification;
 import repository.EntityNotFoundException;
-import repository.activity.ActivityRepository;
-import repository.activity.ActivityRepositoryMySQL;
 import repository.user.UserRepository;
 import service.account.AccountService;
+import service.account.AccountServiceMySQL;
+import service.activity.ActivityService;
 import service.client.ClientService;
 import service.user.AuthenticationService;
 import service.user.AuthenticationServiceMySQL;
@@ -33,15 +33,15 @@ import java.util.List;
 public class AdminController {
     private final AdminView adminView;
     private final UserService userService;
-    private final ActivityRepositoryMySQL activityRepositoryMySQL;
+    private final ActivityService activityServiceMySQL;
 
-    public AdminController(AdminView adminView, UserService userService, ActivityRepositoryMySQL activityRepositoryMySQL) {
+    public AdminController(AdminView adminView, UserService userService, ActivityService activityServiceMySQL) {
 
         this.adminView = adminView;
         this.adminView.setVisible(false);
 
         this.userService = userService;
-        this.activityRepositoryMySQL = activityRepositoryMySQL;
+        this.activityServiceMySQL = activityServiceMySQL;
 
         adminView.setCreateUserButtonListener(new AdminController.CreateUserButtonListener());
         adminView.setViewUserButtonListener(new AdminController.ViewUserButtonListener());
@@ -144,7 +144,7 @@ public class AdminController {
         public void actionPerformed(ActionEvent e) {
 
             List<Activity> activities = new ArrayList<>();
-            activities = activityRepositoryMySQL.retrieveActivitiesByUser(adminView.getUsernameTXT(), adminView.getDateTXT());
+            activities = activityServiceMySQL.retrieveActivitiesByUser(adminView.getUsernameTXT(), adminView.getDateTXT());
 
             if(!activities.isEmpty()){
                 for(Activity activity : activities) {

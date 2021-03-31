@@ -5,12 +5,12 @@ import controller.EmployeeController;
 import controller.LoginController;
 import database.DBConnectionFactory;
 import repository.account.AccountRepositoryMySQL;
-import repository.activity.ActivityRepositoryMySQL;
 import repository.client.ClientRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
 import service.account.AccountService;
 import service.account.AccountServiceMySQL;
+import service.activity.ActivityServiceMySQL;
 import service.client.ClientService;
 import service.client.ClientServiceMySQL;
 import service.user.AuthenticationService;
@@ -47,7 +47,7 @@ public class ComponentFactory {
     private final ClientRepositoryMySQL clientRepositoryMySQL;
     private final AccountRepositoryMySQL accountRepositoryMySQL;
     private final UserRepositoryMySQL userRepositoryMySQL;
-    private final ActivityRepositoryMySQL activityRepositoryMySQL;
+    private final ActivityServiceMySQL activityServiceMySQL;
 
     private static ComponentFactory instance;
 
@@ -64,7 +64,7 @@ public class ComponentFactory {
         this.clientRepositoryMySQL = new ClientRepositoryMySQL(connection);
         this.accountRepositoryMySQL = new AccountRepositoryMySQL(connection);
         this.userRepositoryMySQL = new UserRepositoryMySQL(connection);
-        this.activityRepositoryMySQL = new ActivityRepositoryMySQL(connection);
+        this.activityServiceMySQL = new ActivityServiceMySQL(connection);
         this.clientService = new ClientServiceMySQL(clientRepositoryMySQL);
         this.accountService = new AccountServiceMySQL(accountRepositoryMySQL);
         this.userService = new UserServiceMySQL(userRepositoryMySQL);
@@ -72,8 +72,8 @@ public class ComponentFactory {
         this.loginView = new LoginView();
         this.employeeView = new EmployeeView();
         this.adminView = new AdminView();
-        this.adminController = new AdminController(this.adminView, this.userService, this.activityRepositoryMySQL);
-        this.employeeController = new EmployeeController(this.employeeView, this.accountService, this.clientService, this.activityRepositoryMySQL);
+        this.adminController = new AdminController(this.adminView, this.userService, this.activityServiceMySQL);
+        this.employeeController = new EmployeeController(this.employeeView, this.accountService, this.clientService, this.activityServiceMySQL);
         this.loginController = new LoginController(loginView, authenticationService, employeeController, adminController);
     }
 
