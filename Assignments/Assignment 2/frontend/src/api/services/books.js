@@ -22,4 +22,18 @@ export default {
       return response.data;
     });
   },
+  csv() {
+    return HTTP.get(BASE_URL + "/books/export/CSV", {headers: authHeader()}).then(
+        (response) => {
+            return response.data;
+        }
+    );
+  },
+  pdf() {
+      return HTTP.get(BASE_URL + "/books/export/PDF", {headers: authHeader()}).then(
+          (response) => {
+              return response.data;
+          }
+      );
+  },
 };
