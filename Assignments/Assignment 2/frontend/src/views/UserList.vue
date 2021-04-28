@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     booksAdmin(){
-      router.push("./books");
+      router.push("./booksAdmin");
     },
     editUser(user) {
       this.selectedUser = user;

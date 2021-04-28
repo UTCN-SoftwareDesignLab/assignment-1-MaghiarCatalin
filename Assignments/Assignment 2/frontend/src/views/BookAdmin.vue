@@ -60,7 +60,7 @@ export default {
   },
   methods: {
       user(){
-        router.push("./users");
+        router.push("./user");
       },
       editBook(book) {
         this.selectedBook = book;
